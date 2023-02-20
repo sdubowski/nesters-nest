@@ -1,0 +1,104 @@
+<div *ngIf="isLoaded" class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger">
+                        <h4 class="card-title">Edit Order - {{orderDetail.id}} </h4>
+                        <p class="card-category">The transport exchange form</p>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Company"
+                                               [(ngModel)]="orderDetail.companyId" name="companyId" disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Driver" disabled>
+                                        <!--                                               [(ngModel)]="orderDetail.driver.firstName + ' ' + orderDetail.driver.lastName">-->
+
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Loading place" type="text"
+                                               [(ngModel)]="orderDetail.startPlace" name="startPlace" disabled>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Place of unloading" type="text"
+                                               [(ngModel)]="orderDetail.destination" name="destination" disabled>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Mileage rate"
+                                               [(ngModel)]="orderDetail.mileageRate" name="mileageRate" disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Route length (km)"
+                                               [(ngModel)]="orderDetail.mileage" name="routeLength" disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Type of cargo"
+                                               [(ngModel)]="orderDetail.cargoType" name="cargoType" disabled>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Estimated income" type="number"
+                                               [(ngModel)]="orderDetail.profit" name="profit" disabled>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Creation date" type="datetime-local"
+                                               [(ngModel)]="orderDetail.creationDate" disabled="true" name="creationDate">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Date of unloading" type="datetime-local"
+                                               [(ngModel)]="orderDetail.endDate" name="endDate" disabled>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <label>Additional info</label>
+                                    <mat-form-field class="example-full-width">
+                                        <textarea matInput disabled></textarea>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <button  (click)="goBack(true)"
+                                     mat-raised-button class="btn btn-danger pull-right" id="approveButton" >Take</button>
+                            <button  (click)="goBack(false)"
+                                     mat-raised-button class="btn btn-danger pull-right" type="submit" id="backButton" >Back</button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<router-outlet></router-outlet>

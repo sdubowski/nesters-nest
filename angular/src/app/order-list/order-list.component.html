@@ -1,0 +1,83 @@
+<router-outlet></router-outlet>
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger">
+                        <h4 class="card-title ">Orders</h4>
+                    </div>
+                    <div class="card-body">
+                        <a [routerLink]="['./add']">
+                            <button mat-raised-button class="btn btn-danger pull-right" id="approveButton">
+                                Create
+                            </button>
+                        </a>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class=" text-primary">
+                                <th>
+                                    Order number
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Creation date
+                                </th>
+                                <th>
+                                    End date
+                                </th>
+                                <th>
+                                    Driver
+                                </th>
+                                <th>
+                                    Created by
+                                </th>
+                                <th></th>
+                                </thead>
+                                <tbody>
+                                <ng-container *ngFor="let order of orderView">
+                                    <tr>
+                                        <td>
+                                            {{order.id}}
+                                        </td>
+                                        <td>
+                                            {{order.orderStatus}}
+                                        </td>
+                                        <td>
+                                            {{order.creationDate| date:'yyyy-MM-dd'}}
+                                        </td>
+                                        <td>
+                                            {{order.endDate| date:'yyyy-MM-dd'}}
+                                        </td>
+                                        <td>
+                                            {{order.driverName}}
+                                        </td>
+                                        <td>
+                                            {{order.userName}}
+                                        </td>
+                                        <td>
+                                                <a
+                                                        [routerLink]="['./edit', order.id]"
+                                                        class="btn btn-sm btn-icon btn-black btn-pure  on-default edit-row icon wb-edit"
+                                                        aria-hidden="true" id="orderEdit"
+                                                        containerClass="popover-small primary"
+                                                        popover="Edit"
+                                                        triggers="mouseenter:mouseleave">
+                                                        Edit
+                                                </a>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<notifier-container></notifier-container>
+
