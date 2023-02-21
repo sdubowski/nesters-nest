@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NestersNest.Data;
 using NestersNest.Data.Entities;
 using NestersNest.Data.Entities.Dictionaries;
+using NestersNest.Enums;
 using NestersNest.Models;
 
 namespace NestersNest.Repositories;
@@ -16,6 +17,7 @@ public interface IUserRepository
     public bool UpdateOrder(string id, User user);
     public bool Delete(string id, bool autoCommit = true);
     public IdentityRole<string> GetUserRole(string userId);
+    public List<User> GetDriversByCompany(int companyId);
 }
 
 public class UserRepository: IUserRepository
@@ -109,6 +111,16 @@ public class UserRepository: IUserRepository
     {
         var role = _appDbContext.UserRoles.FirstOrDefault(x => x.UserId == userId);
         return _appDbContext.Roles.FirstOrDefault(x => role != null && x.Id == role.RoleId)!;
+    }
+
+    public List<User> GetDriversByCompany(int companyId)
+    {
+        var drivers = (from u in _appDbContext.User
+                join ur in _appDbContext.UserRoles on u.Id equals ur.UserId
+                where ur.RoleId == "1" && u.CompanyId == companyId
+                select u
+            ).ToList();
+        return drivers;
     }
 
     private bool OrderExists(string id)

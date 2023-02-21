@@ -2,7 +2,7 @@
 	DROP FUNCTION dbo.fntOrderView
 GO
 
-CREATE FUNCTION [dbo].fntOrderView (@companyId varchar(32), @userId varchar(36), @orderTypeId int)
+CREATE FUNCTION [dbo].fntOrderView (@userId varchar(36))
 RETURNS TABLE                     
 AS                    
 RETURN(
@@ -32,7 +32,17 @@ SELECT
 	where u.Id = o.UserId and ur.RoleId = 2
 	) forwarder
 
-	where o.CompanyId = @companyId and o.OrderTypeId = @orderTypeId
+	outer apply (
+	select u.Id, ur.RoleId, u.CompanyId from dbo.Users u
+	join dbo.AspNetUserRoles ur on ur.UserId = u.Id
+	where u.Id = @userId
+	) appUser
+
+	where o.CompanyId = appUser.CompanyId and o.OrderTypeId = 1 and
+	case 
+		when appUser.RoleId = 1 then o.DriverId
+		when appUser.RoleId = 2 then o.UserId
+	end = @userId
 )
 
 GO

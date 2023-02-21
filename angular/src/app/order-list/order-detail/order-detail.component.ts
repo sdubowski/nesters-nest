@@ -6,6 +6,8 @@ import {DatePipe} from '@angular/common';
 import {NotifierService} from 'angular-notifier';
 import {OrderStatus} from '../../models/order-status';
 import {isNotNullOrUndefined} from 'codelyzer/util/isNotNullOrUndefined';
+import {Company} from '../../models/company';
+import {User} from '../../models/user';
 
 declare interface OrderStatusDict {
     id: number;
@@ -33,6 +35,11 @@ export class OrderDetailComponent implements OnInit {
     private readonly notifier: NotifierService;
     public orderStatuses: OrderStatus[] = [];
     public allStatuses: OrderStatus[] = [];
+    public userId: string = localStorage.getItem('userId');
+    public roleId: string = localStorage.getItem('roleId');
+    public isForwarder: boolean;
+    public company: Company;
+    public driverList: User[] = [];
 
     constructor(private orderListService: OrderListService,
                 private route: ActivatedRoute,
@@ -48,13 +55,23 @@ export class OrderDetailComponent implements OnInit {
         })
         this.isEdit = this.route.snapshot.data.title === 'Edit';
         this.isAdd = this.route.snapshot.data.title === 'Add';
+        this.isForwarder = this.roleId === 'Forwarder';
+
+        this.orderListService.getUserCompany(this.userId).subscribe(res => {
+            this.company = res;
+            this.orderListService.getDriversByCompany(this.company.id).subscribe(result => {
+                this.driverList = result;
+            })
+        });
 
         if (this.isEdit) {
             this.id = this.route.snapshot.paramMap.get('id');
             this.orderListService.getOrderDetail(this.id).subscribe(result => {
                 this.orderDetail = result;
                 this.orderStatuses = this.allStatuses;
-                // this.orderStatuses = this.allStatuses.filter(x => x.id === 8 || x.id === 4);
+                if (!this.isForwarder) {
+                    this.orderStatuses = this.allStatuses.filter(x => x.id === 8 || x.id === 4);
+                }
                 this.isLoaded = true;
             })
         } else if (this.isAdd) {
@@ -88,18 +105,22 @@ export class OrderDetailComponent implements OnInit {
     }
 
     goBack() {
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
         this.router.navigate(['/order-list']);
     }
 
     setOrderStatus() {
-        if (this.orderDetail.orderStatusId === 3) {
-            this.orderStatuses = this.allStatuses.filter(x => x.id === 3 || x.id === 4);
+        if (this.isForwarder) {
+            return;
         }
-        if (this.orderDetail.orderStatusId === 4) {
-            this.orderStatuses = this.allStatuses.filter(x => x.id === 4);
+        if (this.orderDetail.orderStatusId === 3) {
+            this.orderStatuses = this.allStatuses.filter(x => x.id === 3 || x.id === 5);
+        }
+        if (this.orderDetail.orderStatusId === 5) {
+            this.orderStatuses = this.allStatuses.filter(x => x.id === 5);
         }
         if (this.orderDetail.orderStatusId === 8) {
-            this.orderStatuses = this.allStatuses.filter(x => x.id === 8 || x.id === 3 || x.id === 4);
+            this.orderStatuses = this.allStatuses.filter(x => x.id === 8 || x.id === 3 || x.id === 5);
         }
         if (this.orderDetail.orderStatusId === 9) {
             this.orderStatuses = this.allStatuses.filter(x => x.id === 9);

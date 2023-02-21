@@ -13,14 +13,19 @@
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Company"
-                                               [(ngModel)]="orderDetail.companyId" name="companyId">
+                                               [(ngModel)]="company.name" name="companyId" disabled="true">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
-                                        <input matInput placeholder="Driver"
-                                               [(ngModel)]="orderDetail.driverId" name="driverId">
-<!--                                               [(ngModel)]="orderDetail.driver.firstName + ' ' + orderDetail.driver.lastName">-->
+                                        <mat-select [(ngModel)]="orderDetail.driverId"
+                                                    [disabled]="!isForwarder"
+                                                    name="driver"
+                                                    placeholder="Driver">
+                                            <mat-option *ngFor="let driver of driverList" [value]="driver.id">
+                                                {{driver.firstName + " " + driver.lastName}}
+                                            </mat-option>
+                                        </mat-select>
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -28,7 +33,7 @@
                                 <div class="col-md-9">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Loading place" type="text"
-                                               [(ngModel)]="orderDetail.startPlace" name="startPlace">
+                                               [(ngModel)]="orderDetail.startPlace" name="startPlace" [disabled]="!isForwarder">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -36,34 +41,34 @@
                                 <div class="col-md-9">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Place of unloading" type="text"
-                                               [(ngModel)]="orderDetail.destination" name="destination">
+                                               [(ngModel)]="orderDetail.destination" name="destination" [disabled]="!isForwarder">
                                     </mat-form-field>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3" *ngIf="isForwarder">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Mileage rate" type="number"
                                                [(ngModel)]="orderDetail.mileageRate"
-                                               (change)="calculateProfit()" name="companyId">
+                                               (change)="calculateProfit()" name="mileageRate" min="0">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Route length (km)" type="number"
                                                [(ngModel)]="orderDetail.mileage"
-                                               (change)="calculateProfit()" name="companyId" min="0">
+                                               (change)="calculateProfit()" name="mileage" min="0">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Type of cargo"
-                                               [(ngModel)]="orderDetail.cargoType" name="companyId">
+                                               [(ngModel)]="orderDetail.cargoType" name="cargoType" [disabled]="!isForwarder">
                                     </mat-form-field>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3" *ngIf="isForwarder">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Estimated income" type="number"
                                                [(ngModel)]="orderDetail.profit" name="profit" min="0">
@@ -81,23 +86,26 @@
                                                [(ngModel)]="orderDetail.endDate" name="endDate">
                                     </mat-form-field>
                                 </div>
-                                <div class="col-md-3" *ngIf="isEdit">
-                                    <label>Status</label>
-                                    <ng-select #orderStatusId name="orderStatusId"
-                                               [(ngModel)]="orderDetail.orderStatusId"
-                                               [ngModelOptions]="{standalone: true}"
-                                               [items]="orderStatuses"
-                                               (change)="setOrderStatus()"
-                                               bindValue="id"
-                                               bindLabel="description">
-                                    </ng-select>
-                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-9">
                                     <label>Additional info</label>
                                     <mat-form-field class="example-full-width">
-                                        <textarea matInput></textarea>
+                                        <textarea matInput [disabled]="!isForwarder"></textarea>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3" *ngIf="isEdit">
+                                    <mat-form-field class="example-full-width">
+                                        <label>Status</label>
+                                        <mat-select [(ngModel)]="orderDetail.orderStatusId"
+                                                    (change)="setOrderStatus()"
+                                                    name="orderStatusId">
+                                            <mat-option *ngFor="let status of orderStatuses" [value]="status.id">
+                                                {{status.description}}
+                                            </mat-option>
+                                        </mat-select>
                                     </mat-form-field>
                                 </div>
                             </div>

@@ -13,14 +13,13 @@
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Company"
-                                               [(ngModel)]="orderDetail.companyId" name="companyId" disabled>
+                                               [(ngModel)]="company.name" name="companyId" disabled="true">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
-                                        <input matInput placeholder="Driver" disabled>
-                                        <!--                                               [(ngModel)]="orderDetail.driver.firstName + ' ' + orderDetail.driver.lastName">-->
-
+                                        <input matInput placeholder="Driver"
+                                               [(ngModel)]="orderDetail.driverId" [value]="driver.firstName + ' ' + driver.lastName" name="driverId" disabled="true">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -28,7 +27,7 @@
                                 <div class="col-md-9">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Loading place" type="text"
-                                               [(ngModel)]="orderDetail.startPlace" name="startPlace" disabled>
+                                               [(ngModel)]="orderDetail.startPlace" name="startPlace" disabled="true">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -36,27 +35,29 @@
                                 <div class="col-md-9">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Place of unloading" type="text"
-                                               [(ngModel)]="orderDetail.destination" name="destination" disabled>
+                                               [(ngModel)]="orderDetail.destination" name="destination" disabled="true">
                                     </mat-form-field>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3" *ngIf="isForwarder">
                                     <mat-form-field class="example-full-width">
-                                        <input matInput placeholder="Mileage rate"
-                                               [(ngModel)]="orderDetail.mileageRate" name="mileageRate" disabled>
+                                        <input matInput placeholder="Mileage rate" type="number"
+                                               [(ngModel)]="orderDetail.mileageRate"
+                                               (change)="calculateProfit()" name="mileageRate" min="0" disabled="true">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
-                                        <input matInput placeholder="Route length (km)"
-                                               [(ngModel)]="orderDetail.mileage" name="routeLength" disabled>
+                                        <input matInput placeholder="Route length (km)" type="number"
+                                               [(ngModel)]="orderDetail.mileage"
+                                               (change)="calculateProfit()" name="mileage" min="0" disabled="true">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Type of cargo"
-                                               [(ngModel)]="orderDetail.cargoType" name="cargoType" disabled>
+                                               [(ngModel)]="orderDetail.cargoType" name="cargoType" disabled="true">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -64,7 +65,7 @@
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Estimated income" type="number"
-                                               [(ngModel)]="orderDetail.profit" name="profit" disabled>
+                                               [(ngModel)]="orderDetail.profit" name="profit" min="0" disabled="true">
                                     </mat-form-field>
                                 </div>
                                 <div class="col-md-3">
@@ -76,7 +77,7 @@
                                 <div class="col-md-3">
                                     <mat-form-field class="example-full-width">
                                         <input matInput placeholder="Date of unloading" type="datetime-local"
-                                               [(ngModel)]="orderDetail.endDate" name="endDate" disabled>
+                                               [(ngModel)]="orderDetail.endDate" name="endDate" disabled="true">
                                     </mat-form-field>
                                 </div>
                             </div>
@@ -84,13 +85,27 @@
                                 <div class="col-md-9">
                                     <label>Additional info</label>
                                     <mat-form-field class="example-full-width">
-                                        <textarea matInput disabled></textarea>
+                                        <textarea matInput disabled="true"></textarea>
                                     </mat-form-field>
                                 </div>
                             </div>
-                            <button  (click)="goBack(true)"
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-3" *ngIf="isEdit">-->
+<!--                                    <mat-form-field class="example-full-width">-->
+<!--                                        <label>Status</label>-->
+<!--                                        <mat-select [(ngModel)]="orderDetail.orderStatusId"-->
+<!--                                                    (change)="setOrderStatus()"-->
+<!--                                                    name="orderStatusId">-->
+<!--                                            <mat-option *ngFor="let status of orderStatuses" [value]="status.id">-->
+<!--                                                {{status.description}}-->
+<!--                                            </mat-option>-->
+<!--                                        </mat-select>-->
+<!--                                    </mat-form-field>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <button  *ngIf="showTakeButton && !isForwarder" (click)="takeOrder()"
                                      mat-raised-button class="btn btn-danger pull-right" id="approveButton" >Take</button>
-                            <button  (click)="goBack(false)"
+                            <button  (click)="goBack()"
                                      mat-raised-button class="btn btn-danger pull-right" type="submit" id="backButton" >Back</button>
                             <div class="clearfix"></div>
                         </form>

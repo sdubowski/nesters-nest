@@ -4,9 +4,9 @@ namespace NestersNest.Models;
 
 public class OrderModel
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
     public OrderStatusEnum OrderStatusId { get; set; }
-    public string DriverId { get; set; }
+    public string? DriverId { get; set; }
     public User? Driver { get; set; }
     public string StartPlace { get; set; }
     public string Destination { get; set; }

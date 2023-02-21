@@ -17,7 +17,8 @@ public interface IOrderRepository
     public bool UpdateOrder(int id, Order order);
     public bool Delete(int id, bool autoCommit = true);
 
-    public List<OrderView> GetOrderView(int companyId, int? userId, int orderTypeId);
+    public List<OrderView> GetOrderView(string userId);
+    public List<OrderView> GetTransportExchangeView();
     public IEnumerable<OrderStatus> GetAllOrderStatus();
 }
 
@@ -108,25 +109,29 @@ public class OrderRepository: IOrderRepository
         return true;
     }
 
-    public List<OrderView> GetOrderView(int companyId, int? userId, int orderTypeId)
+    public List<OrderView> GetOrderView(string userId)
     {
         using (_appDbContext)
         {
-                var sqlQuery = $"SELECT * FROM [dbo].[fntOrderView](@companyId, @userId, @orderTypeId)";
+                var sqlQuery = $"SELECT * FROM [dbo].[fntOrderView](@userId)";
                 
                 var listParameters = new List<SqlParameter>();
-                listParameters.Add(new SqlParameter("companyId", SqlDbType.VarChar) {Value = companyId});
-                listParameters.Add(new SqlParameter("userId", SqlDbType.VarChar) {Value = userId != null? userId: string.Empty});
-                listParameters.Add(new SqlParameter("orderTypeId", SqlDbType.Int) {Value = orderTypeId});
+                listParameters.Add(new SqlParameter("userId", SqlDbType.VarChar) {Value = userId});
 
-                if (userId != null)
-                {
-                    sqlQuery = sqlQuery + ("AND o.DriverId = @userId");
-                }
-                
                 var result = _appDbContext.OrderView?.FromSqlRaw(sqlQuery, listParameters.ToArray()).OrderByDescending(o => o.Id).AsNoTracking().ToList();
 
                 return result;
+        }
+    }
+
+    public List<OrderView> GetTransportExchangeView()
+    {
+        using (_appDbContext)
+        {
+            var sqlQuery = $"SELECT * FROM [dbo].[fntTransportExchangeView]()";
+            var result = _appDbContext.OrderView?.FromSqlRaw(sqlQuery).OrderByDescending(o => o.Id).AsNoTracking().ToList();
+
+            return result;
         }
     }
 

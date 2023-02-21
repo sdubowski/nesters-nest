@@ -15,6 +15,8 @@ public class MappingProfile : Profile
         CreateMap<Order, OrderModel>();
         CreateMap<AddressModel, Address>();
         CreateMap<Address, AddressModel>();
+        CreateMap<Company, CompanyModel>();
+        CreateMap<CompanyModel, Company>();
 
     }
 }

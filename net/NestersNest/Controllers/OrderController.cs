@@ -82,10 +82,24 @@ namespace NestersNest.Controllers
         }
         
         // GET: api/OrderView
-        [Microsoft.AspNetCore.Mvc.HttpGet("GetOrderView")]
-        public IActionResult GetOrderView(int companyId, int orderTypeId, int? userId)
+        [HttpGet("GetOrderView")]
+        public IActionResult GetOrderView([FromQuery] string userId)
         {
-            var result = _orderService.GetOrderView(companyId, userId, orderTypeId);
+            var result = _orderService.GetOrderView(userId);
+
+            if (result.Any())
+            {
+                return Ok(result);
+            }
+
+            return NotFound();
+        }
+        
+        // GET: api/OrderView
+        [HttpGet("GetTransportExchangeView")]
+        public IActionResult GetTransportExchangeView()
+        {
+            var result = _orderService.GetTransportExchangeView();
 
             if (result.Any())
             {
@@ -111,6 +125,19 @@ namespace NestersNest.Controllers
             return Ok(statusList);
         }
         
-        
+        [HttpPut("TakeOrder/{id}")]
+        public IActionResult TakeOrder(int id, OrderModel order)
+        {
+            var result = _orderService.TakeOrder(id, order);
+
+            if (result)
+            {
+                return Ok();
+            }
+
+            return NotFound();
+        }
+
+
     }
 }

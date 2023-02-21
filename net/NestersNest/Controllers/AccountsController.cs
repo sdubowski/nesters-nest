@@ -55,7 +55,7 @@ namespace NestersNest.Controllers
             var claims = _jwtHandler.GetClaims(user, roles);
             var tokenOptions = _jwtHandler.GenerateTokenOptions(signingCredentials, claims);
             var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token, UserId = user.Id});
+            return Ok(new AuthResponseDto { IsAuthSuccessful = true, Token = token, UserId = user.Id, RoleId = roles.FirstOrDefault()});
         }
     }
     

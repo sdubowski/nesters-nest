@@ -16,6 +16,7 @@ public interface IUserService
     public bool UpdateOrder(string id, UserModel user);
     public bool Delete(string id);
     public User GetUser(ClaimsPrincipal principalUser);
+    public List<UserModel> GetDriversByCompany(int companyId);
 
 }
 
@@ -65,5 +66,10 @@ public class UserService: IUserService
     {
         var user = _userManager.GetUserAsync(principalUser).Result;
         return user;
+    }
+
+    public List<UserModel> GetDriversByCompany(int companyId)
+    {
+        return _mapper.Map<List<UserModel>>(_userRepository.GetDriversByCompany(companyId)); 
     }
 }

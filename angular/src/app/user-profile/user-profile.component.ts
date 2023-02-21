@@ -18,8 +18,10 @@ export class UserProfileComponent implements OnInit {
     this.userProfileService.getCurrentUser().subscribe(result => {
       this.user = result;
       this.isLoad = true;
+      this.userProfileService.getUserCompany(this.user.id).subscribe(res => {
+        this.companyName = res.name;
+      });
     });
-    this.companyName = 'testowa firma';
   }
 
 }

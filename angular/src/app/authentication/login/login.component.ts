@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
             username: new FormControl('', [Validators.required]),
             password: new FormControl('', [Validators.required])
         })
-        this.returnUrl = '/';
+        this.returnUrl = '/dashboard';
     }
     validateControl = (controlName: string) => {
         return this.loginForm.get(controlName).invalid && this.loginForm.get(controlName).touched
@@ -44,6 +44,7 @@ export class LoginComponent implements OnInit {
                 next: (res: AuthResponseDto) => {
                     localStorage.setItem('token', res.token);
                     localStorage.setItem('userId', res.userId);
+                    localStorage.setItem('roleId', res.roleId);
                     this.router.navigate([this.returnUrl]);
                 },
                 error: (err: HttpErrorResponse) => {

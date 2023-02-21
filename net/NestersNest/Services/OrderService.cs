@@ -16,9 +16,11 @@ public interface IOrderService
     public bool Add(OrderModel order);
     public bool UpdateOrder(int id, OrderModel order);
     public bool Delete(int id);
-    public List<OrderView> GetOrderView(int companyId, int? userId, int orderTypeId);
+    public List<OrderView> GetOrderView(string userId);
+    public List<OrderView> GetTransportExchangeView();
     public OrderModel CreateOrder();
     public List<OrderStatus> GetAllOrderStatus();
+    public bool TakeOrder(int id, OrderModel order);
 }
 
 public class OrderService: IOrderService
@@ -49,6 +51,10 @@ public class OrderService: IOrderService
 
     public bool UpdateOrder(int id, OrderModel order)
     {
+        if (order.OrderStatusId == OrderStatusEnum.TransferredToTheTransportExchange)
+        {
+            TransferOrderToExchange(order);
+        }
         return _orderRepository.UpdateOrder(id, _mapper.Map<Order>(order));
     }
 
@@ -58,9 +64,14 @@ public class OrderService: IOrderService
     }
     
 
-    public List<OrderView> GetOrderView(int companyId, int? userId, int orderTypeId)
+    public List<OrderView> GetOrderView(string userId)
     {
-        return _orderRepository.GetOrderView(companyId, userId, orderTypeId);
+        return _orderRepository.GetOrderView(userId);
+    }
+
+    public List<OrderView> GetTransportExchangeView()
+    {
+        return _orderRepository.GetTransportExchangeView();
     }
 
     public OrderModel CreateOrder()
@@ -80,5 +91,22 @@ public class OrderService: IOrderService
     public List<OrderStatus> GetAllOrderStatus()
     {
         return _orderRepository.GetAllOrderStatus().ToList();
+    }
+
+    public bool TakeOrder(int id, OrderModel order)
+    {
+        order.OrderStatusId = OrderStatusEnum.Approved;
+        return _orderRepository.UpdateOrder(id, _mapper.Map<Order>(order));
+    }
+
+    private void TransferOrderToExchange(OrderModel srcOrderModel)
+    {
+        var newOrder = srcOrderModel.Copy();
+        newOrder.Id = null;
+        newOrder.Driver = null;
+        newOrder.DriverId = null;
+        newOrder.OrderTypeId = OrderTypeEnum.TransportExchange;
+        newOrder.OrderStatusId = OrderStatusEnum.WaitingForDriver;
+        Add(newOrder);
     }
 }

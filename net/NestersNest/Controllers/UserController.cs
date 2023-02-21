@@ -1,14 +1,12 @@
-using System.Web.Http;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NestersNest.Models;
 using NestersNest.Services;
 
 namespace NestersNest.Controllers
 {
-    [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -18,7 +16,7 @@ namespace NestersNest.Controllers
             _userService = userService;
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpGet("GetCurrentUser/{id}")]
+        [HttpGet("GetCurrentUser/{id}")]
         public async Task<ActionResult<UserModel>> GetCurrentUser(string id)
         {
             var user = _userService.Get(id);
@@ -26,7 +24,7 @@ namespace NestersNest.Controllers
         }
 
         // GET: api/User
-        [Microsoft.AspNetCore.Mvc.HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetUser()
         {
             var users = _userService.GetAll();
@@ -39,7 +37,7 @@ namespace NestersNest.Controllers
         }
 
         // GET: api/User/5
-        [Microsoft.AspNetCore.Mvc.HttpGet("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<UserModel>> GetUser(string id)
         {
             var user = _userService.Get(id);
@@ -48,7 +46,7 @@ namespace NestersNest.Controllers
 
         // PUT: api/User/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Microsoft.AspNetCore.Mvc.HttpPut("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(string id, UserModel user)
         {
             var result = _userService.UpdateOrder(id, user);
@@ -63,7 +61,7 @@ namespace NestersNest.Controllers
 
         // POST: api/User
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Microsoft.AspNetCore.Mvc.HttpPost]
+        [HttpPost]
         public async Task<ActionResult<User>> PostUser(UserModel user)
         {
             var result = _userService.Add(user);
@@ -77,7 +75,7 @@ namespace NestersNest.Controllers
         }
 
         // DELETE: api/User/5
-        [Microsoft.AspNetCore.Mvc.HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var result = _userService.Delete(id);
@@ -85,6 +83,19 @@ namespace NestersNest.Controllers
             if (result)
             {
                 return Ok();
+            }
+
+            return NotFound();
+        }
+        
+        [HttpGet("GetDriversByCompany/{companyId:int}")]
+        public async Task<IActionResult> GetDriversByCompany(int companyId)
+        {
+            var result = _userService.GetDriversByCompany(companyId);
+
+            if (result.Any())
+            {
+                return Ok(result);
             }
 
             return NotFound();

@@ -15,7 +15,7 @@ export class TransportExchangeComponent implements OnInit {
     }
 
     async ngOnInit() {
-        this.transportExchangeService.getOrderView(2).subscribe(result => {
+        this.transportExchangeService.getOrderView().subscribe(result => {
             this.orderView = result;
         });
     }
